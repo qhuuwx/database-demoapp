@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://192.168.0.178:5000/api/nhacungcap/';
+const API_URL = 'http://localhost:5000/api/nhacungcap/';
 
 const nhaCungCapService = {
   getAll: async () => {

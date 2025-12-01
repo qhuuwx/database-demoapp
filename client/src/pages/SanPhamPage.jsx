@@ -158,13 +158,7 @@ function SanPhamPage() {
           >
             Tìm kiếm
           </button>
-          <button 
-            onClick={handleReset}
-            className="btn btn-secondary"
-            style={{ padding: '11px 24px' }}
-          >
-            Reset
-          </button>
+          
           {isNhanVien && (
             <button 
               onClick={handleAdd}

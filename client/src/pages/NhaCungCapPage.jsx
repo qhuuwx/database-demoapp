@@ -128,12 +128,7 @@ const NhaCungCapPage = () => {
           >
             Tìm kiếm
           </button>
-          <button 
-            onClick={handleReset}
-            className="btn btn-secondary"
-          >
-            Reset
-          </button>
+          
           {isNhanVien && (
             <button 
               onClick={handleAdd} 
