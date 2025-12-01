@@ -9,6 +9,7 @@ import ContentsPage from './pages/ContentsPage';
 import RoleGuard from './components/RoleGuard';
 import Header from './components/Header';
 import NhaCungCapPage from './pages/NhaCungCapPage';
+import SanPhamPage from './pages/SanPhamPage';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/nhacungcap" element={<NhaCungCapPage />} />
+          <Route path="/sanpham" element={<SanPhamPage />} />
           <Route path="/admin/users" element={
               <RoleGuard allowedRoles={["NhanVien"]}>
                 <AdminUsersPage />

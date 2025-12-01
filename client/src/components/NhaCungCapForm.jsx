@@ -9,6 +9,43 @@ const defaultData = {
   SoDienThoai: ''
 };
 
+const TINH_THANH_PHO = [
+  'An Giang',
+  'Bắc Ninh',
+  'Bình Phước',
+  'Bình Thuận',
+  'Cà Mau',
+  'Cao Bằng',
+  'Điện Biên',
+  'Đắk Lắk',
+  'Đồng Nai',
+  'Đồng Tháp',
+  'Gia Lai',
+  'Hà Nội',
+  'Hà Tĩnh',
+  'Hưng Yên',
+  'Khánh Hòa',
+  'Lâm Đồng',
+  'Lạng Sơn',
+  'Lào Cai',
+  'Nghệ An',
+  'Ninh Bình',
+  'Phú Thọ',
+  'Quảng Ngãi',
+  'Quảng Ninh',
+  'Quảng Trị',
+  'Sơn La',
+  'Tây Ninh',
+  'Thái Nguyên',
+  'Thanh Hóa',
+  'TP Đà Nẵng',
+  'TP Hải Phòng',
+  'TP Hồ Chí Minh',
+  'TP Huế',
+  'Tuyên Quang',
+  'Vĩnh Long'
+];
+
 const NhaCungCapForm = ({ initial, onSubmit, onClose }) => {
   const [form, setForm] = useState(initial || defaultData);
   const [errors, setErrors] = useState({});
@@ -49,42 +86,97 @@ const NhaCungCapForm = ({ initial, onSubmit, onClose }) => {
   };
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #ccc', padding: 24, marginTop: 24 }}>
-      <h3>{initial ? 'Sửa' : 'Thêm mới'} Nhà cung cấp</h3>
+    <div>
+      <div className="modal-header">
+        {initial ? 'Sửa Nhà cung cấp' : 'Thêm mới Nhà cung cấp'}
+      </div>
+      
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Tên nhà cung cấp:</label>
-          <input name="Ten" value={form.Ten} onChange={handleChange} />
-          {errors.Ten && <div style={{ color: 'red' }}>{errors.Ten}</div>}
+        <div className="form-group">
+          <label>Tên nhà cung cấp</label>
+          <input 
+            name="Ten" 
+            className="form-control"
+            value={form.Ten} 
+            onChange={handleChange}
+            placeholder="Nhập tên nhà cung cấp"
+          />
+          {errors.Ten && <div className="error-message">{errors.Ten}</div>}
         </div>
-        <div>
-          <label>Email:</label>
-          <input name="Email" value={form.Email} onChange={handleChange} />
-          {errors.Email && <div style={{ color: 'red' }}>{errors.Email}</div>}
+        
+        <div className="form-group">
+          <label>Email</label>
+          <input 
+            name="Email" 
+            type="email"
+            className="form-control"
+            value={form.Email} 
+            onChange={handleChange}
+            placeholder="example@email.com"
+          />
+          {errors.Email && <div className="error-message">{errors.Email}</div>}
         </div>
-        <div>
-          <label>Đường:</label>
-          <input name="Duong" value={form.Duong} onChange={handleChange} />
-          {errors.Duong && <div style={{ color: 'red' }}>{errors.Duong}</div>}
+        
+        <div className="form-group">
+          <label>Đường</label>
+          <input 
+            name="Duong" 
+            className="form-control"
+            value={form.Duong} 
+            onChange={handleChange}
+            placeholder="Nhập tên đường"
+          />
+          {errors.Duong && <div className="error-message">{errors.Duong}</div>}
         </div>
-        <div>
-          <label>Phường xã:</label>
-          <input name="PhuongXa" value={form.PhuongXa} onChange={handleChange} />
-          {errors.PhuongXa && <div style={{ color: 'red' }}>{errors.PhuongXa}</div>}
+        
+        <div className="form-group">
+          <label>Phường xã</label>
+          <input 
+            name="PhuongXa" 
+            className="form-control"
+            value={form.PhuongXa} 
+            onChange={handleChange}
+            placeholder="Nhập phường/xã"
+          />
+          {errors.PhuongXa && <div className="error-message">{errors.PhuongXa}</div>}
         </div>
-        <div>
-          <label>Tỉnh Thành phố:</label>
-          <input name="TinhThanhPho" value={form.TinhThanhPho} onChange={handleChange} />
-          {errors.TinhThanhPho && <div style={{ color: 'red' }}>{errors.TinhThanhPho}</div>}
+        
+        <div className="form-group">
+          <label>Tỉnh Thành phố</label>
+          <select 
+            name="TinhThanhPho" 
+            className="form-control"
+            value={form.TinhThanhPho} 
+            onChange={handleChange}
+            style={{ padding: '10px', fontSize: '14px' }}
+          >
+            <option value="">-- Chọn tỉnh/thành phố --</option>
+            {TINH_THANH_PHO.map((tinh, index) => (
+              <option key={index} value={tinh}>{tinh}</option>
+            ))}
+          </select>
+          {errors.TinhThanhPho && <div className="error-message">{errors.TinhThanhPho}</div>}
         </div>
-        <div>
-          <label>Số điện thoại:</label>
-          <input name="SoDienThoai" value={form.SoDienThoai} onChange={handleChange} />
-          {errors.SoDienThoai && <div style={{ color: 'red' }}>{errors.SoDienThoai}</div>}
+        
+        <div className="form-group">
+          <label>Số điện thoại</label>
+          <input 
+            name="SoDienThoai" 
+            className="form-control"
+            value={form.SoDienThoai} 
+            onChange={handleChange}
+            placeholder="Nhập số điện thoại (10-11 số)"
+          />
+          {errors.SoDienThoai && <div className="error-message">{errors.SoDienThoai}</div>}
         </div>
-        <div style={{ marginTop: 16 }}>
-          <button type="submit">{initial ? 'Cập nhật' : 'Thêm mới'}</button>
-          <button type="button" onClick={onClose} style={{ marginLeft: 8 }}>Đóng</button>
+        
+        <div className="modal-footer">
+          <button type="button" onClick={onClose} className="btn btn-secondary">
+            Đóng
+          </button>
+          <button type="submit" className="btn btn-primary">
+            {initial ? 'Cập nhật' : 'Thêm mới'}
+          </button>
         </div>
       </form>
     </div>
