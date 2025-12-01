@@ -12,5 +12,7 @@ router.post('/', nhaCungCapController.createNhaCungCap);
 router.put('/', nhaCungCapController.updateNhaCungCap);
 // Xóa nhà cung cấp (gọi thủ tục)
 router.delete('/:MaNhaCungCap', nhaCungCapController.deleteNhaCungCap);
+// Thống kê nhà cung cấp theo khu vực và số lượng tối thiểu (truyền qua query string)
+router.get('/thongke/:TinhThanhPho', nhaCungCapController.findNhaCungCapByArea);
 
 module.exports = router;

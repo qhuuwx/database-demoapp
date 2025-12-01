@@ -15,6 +15,7 @@ app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/admin', require('./routes/admin.routes'));
 app.use('/api/contents', require('./routes/content.routes'));
 app.use('/api/nhacungcap', require('./routes/nhacungcap.routes'));
+app.use('/api/sanpham', require('./routes/sanpham.routes.js'));
 
 // Sync DB (not recommended in production)
 sequelize.sync().then(() => {

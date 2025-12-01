@@ -8,9 +8,7 @@ class TaiKhoan extends Model { }
 TaiKhoan.init({
   MaTaiKhoan: {
     type: DataTypes.STRING,
-    primaryKey: true,
-    allowNull: true,
-    comment: 'Mã tài khoản dạng ACC0001, ACC0002...'
+    primaryKey: true
   },
   TenTaiKhoan: {
     type: DataTypes.STRING,
