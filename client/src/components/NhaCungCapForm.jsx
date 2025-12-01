@@ -58,8 +58,14 @@ const NhaCungCapForm = ({ initial, onSubmit, onClose }) => {
     if (!form.Email || !/^\S+@\S+\.\S+$/.test(form.Email)) {
       newErrors.Email = 'Email không hợp lệ.';
     }
-    if (!form.SoDienThoai || form.SoDienThoai.length < 10 || form.SoDienThoai.length > 11 || /[^0-9]/.test(form.SoDienThoai)) {
-      newErrors.SoDienThoai = 'Số điện thoại phải là số và có 10-11 ký tự.';
+    if (
+      !form.SoDienThoai ||
+      form.SoDienThoai.length < 10 ||
+      form.SoDienThoai.length > 11 ||
+      /[^0-9]/.test(form.SoDienThoai) ||
+      form.SoDienThoai[0] !== '0'
+    ) {
+      newErrors.SoDienThoai = 'Số điện thoại phải là số, bắt đầu từ 0 và có 10-11 ký tự.';
     }
     if (!form.Duong || form.Duong.trim() === '') {
       newErrors.Duong = 'Đường không được để trống.';
