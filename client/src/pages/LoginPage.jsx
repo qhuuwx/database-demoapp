@@ -47,7 +47,8 @@ function LoginPage() {
       fontSize: '32px',
       fontWeight: '700',
       color: '#2c3e50',
-      marginBottom: '8px'
+      marginBottom: '8px',
+      textAlign: 'center'
     },
     subtitle: {
       color: '#6c757d',
@@ -62,48 +63,48 @@ function LoginPage() {
           <h2 style={styles.title}>Đăng nhập</h2>
           <p style={styles.subtitle}>Chào mừng bạn trở lại!</p>
         </div>
-        
+
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Email hoặc Tên tài khoản</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               className="form-control"
-              placeholder="Nhập email hoặc tên tài khoản" 
-              value={account} 
-              onChange={e => setAccount(e.target.value)} 
-              required 
+              placeholder="Nhập email hoặc tên tài khoản"
+              value={account}
+              onChange={e => setAccount(e.target.value)}
+              required
             />
           </div>
-          
+
           <div className="form-group">
             <label>Mật khẩu</label>
-            <input 
-              type="password" 
+            <input
+              type="password"
               className="form-control"
-              placeholder="Nhập mật khẩu" 
-              value={password} 
-              onChange={e => setPassword(e.target.value)} 
-              required 
+              placeholder="Nhập mật khẩu"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
             />
           </div>
-          
+
           {error && (
             <div className="alert alert-danger">
               {error}
             </div>
           )}
-          
-          <button 
-            type="submit" 
-            className="btn btn-primary" 
-            style={{ width: '100%', padding: '14px', fontSize: '16px', fontWeight: '600' }}
+          <button
+            type="submit"
+            className="btn-login"
+            style={{ width: '100%', padding: '14px', fontSize: '16px', fontWeight: '600', textAlign: 'center' }}
             disabled={loading}
+
           >
             {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
           </button>
         </form>
-        
+
         <div style={{ marginTop: '24px', textAlign: 'center', color: '#6c757d', fontSize: '14px' }}>
           Chưa có tài khoản? <Link to="/register" style={{ color: '#3498db', fontWeight: '600', textDecoration: 'none' }}>Đăng ký ngay</Link>
         </div>
