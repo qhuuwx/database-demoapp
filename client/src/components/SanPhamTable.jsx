@@ -26,7 +26,6 @@ const SanPhamTable = ({ list = [], onEdit, onDelete, sortField, sortOrder, onSor
             <SortableHeader field="SoLuongTonKho">Tồn kho</SortableHeader>
             <SortableHeader field="DiemDanhGiaTB">Đánh giá</SortableHeader>
             <SortableHeader field="MoTa">Mô tả</SortableHeader>
-            {isNhanVien && <th style={{ textAlign: 'center' }}>Hành động</th>}
           </tr>
         </thead>
         <tbody>
@@ -42,28 +41,10 @@ const SanPhamTable = ({ list = [], onEdit, onDelete, sortField, sortOrder, onSor
               <td style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {item.MoTa}
               </td>
-              {isNhanVien && (
-                <td style={{ textAlign: 'center' }}>
-                  <button 
-                    onClick={() => onEdit(item)} 
-                    className="btn btn-info"
-                    style={{ padding: '6px 12px', fontSize: '13px', marginRight: '6px' }}
-                  >
-                    Sửa
-                  </button>
-                  <button 
-                    onClick={() => onDelete(item.MaSanPham)} 
-                    className="btn btn-danger"
-                    style={{ padding: '6px 12px', fontSize: '13px' }}
-                  >
-                    Xóa
-                  </button>
-                </td>
-              )}
             </tr>
           )) : (
             <tr>
-              <td colSpan={isNhanVien ? "7" : "6"} style={{ textAlign: 'center', padding: '40px', color: '#6c757d' }}>
+              <td colSpan="6" style={{ textAlign: 'center', padding: '40px', color: '#6c757d' }}>
                 Chưa có sản phẩm nào
               </td>
             </tr>
