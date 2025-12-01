@@ -69,76 +69,76 @@ function RegisterPage() {
           <h2 style={styles.title}>Đăng ký</h2>
           <p style={styles.subtitle}>Tạo tài khoản mới</p>
         </div>
-        
+
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Tên tài khoản</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               className="form-control"
-              placeholder="Nhập tên tài khoản" 
-              value={username} 
-              onChange={e => setUsername(e.target.value)} 
-              required 
+              placeholder="Nhập tên tài khoản"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              required
             />
           </div>
-          
+
           <div className="form-group">
             <label>Email</label>
-            <input 
-              type="email" 
+            <input
+              type="email"
               className="form-control"
-              placeholder="example@email.com" 
-              value={email} 
-              onChange={e => setEmail(e.target.value)} 
-              required 
+              placeholder="example@email.com"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
             />
           </div>
-          
+
           <div className="form-group">
             <label>Mật khẩu</label>
-            <input 
-              type="password" 
+            <input
+              type="password"
               className="form-control"
-              placeholder="Nhập mật khẩu" 
-              value={password} 
-              onChange={e => setPassword(e.target.value)} 
-              required 
+              placeholder="Nhập mật khẩu"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
             />
           </div>
-          
+
           <div className="form-group">
             <label>Xác nhận mật khẩu</label>
-            <input 
-              type="password" 
+            <input
+              type="password"
               className="form-control"
-              placeholder="Nhập lại mật khẩu" 
-              value={confirm} 
-              onChange={e => setConfirm(e.target.value)} 
-              required 
+              placeholder="Nhập lại mật khẩu"
+              value={confirm}
+              onChange={e => setConfirm(e.target.value)}
+              required
             />
           </div>
-          
+
           <div className="alert alert-info" style={{ fontSize: '13px' }}>
             Tất cả tài khoản mới đều có vai trò KhachHang
           </div>
-          
+
           {error && (
             <div className="alert alert-danger">
               {error}
             </div>
           )}
-          
-          <button 
-            type="submit" 
-            className="btn btn-primary" 
+
+          <button
+            type="submit"
+            className="btn btn-primary"
             style={{ width: '100%', padding: '14px', fontSize: '16px', fontWeight: '600' }}
             disabled={loading}
           >
             {loading ? 'Đang đăng ký...' : 'Đăng ký'}
           </button>
         </form>
-        
+
         <div style={{ marginTop: '24px', textAlign: 'center', color: '#6c757d', fontSize: '14px' }}>
           Đã có tài khoản? <Link to="/login" style={{ color: '#3498db', fontWeight: '600', textDecoration: 'none' }}>Đăng nhập</Link>
         </div>
