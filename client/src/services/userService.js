@@ -1,5 +1,5 @@
 import axios from 'axios';
-const API_URL = 'http://localhost:5000/api/admin';
+const API_URL = 'http://192.168.0.178:5000/api/admin';
 
 const userService = {
   getAllUsers: async (token) => {
