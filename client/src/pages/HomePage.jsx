@@ -72,8 +72,8 @@ function HomePage() {
   return (
     <div style={styles.container}>
       <div style={styles.content}>
-        <h1 style={styles.title}>Chào mừng đến với Hệ thống Quản lý</h1>
-        <p style={styles.subtitle}>Giải pháp quản lý nhà cung cấp và sản phẩm hiện đại</p>
+        <h1 style={styles.title}>Chào mừng đến với RauMaBK</h1>
+        <p style={styles.subtitle}>Giải pháp quản lý nhà cung cấp thuốc hiện đại</p>
         
         {user && (
           <div style={styles.welcomeBox}>
@@ -86,8 +86,8 @@ function HomePage() {
           </div>
         )}
 
-        <div style={styles.cardGrid}>
-          <Link to="/nhacungcap" style={styles.card} onMouseEnter={(e) => {
+        {!user && (
+          <Link to="/login" style={styles.card} onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'translateY(-8px)';
             e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.15)';
           }} onMouseLeave={(e) => {
@@ -95,44 +95,12 @@ function HomePage() {
             e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
           }}>
             <div style={{ ...styles.cardIcon, fontSize: '0' }}></div>
-            <div style={styles.cardTitle}>Nhà cung cấp</div>
+            <div style={styles.cardTitle}>Đăng nhập</div>
             <div style={styles.cardDesc}>
-              Quản lý danh sách nhà cung cấp, tìm kiếm sản phẩm và thông tin chi tiết
+              Đăng nhập để truy cập đầy đủ các tính năng của hệ thống
             </div>
           </Link>
-
-          {user?.VaiTro === 'NhanVien' && (
-            <Link to="/admin/users" style={styles.card} onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-8px)';
-              e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.15)';
-            }} onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
-            }}>
-              <div style={{ ...styles.cardIcon, fontSize: '0' }}></div>
-              <div style={styles.cardTitle}>Quản lý tài khoản</div>
-              <div style={styles.cardDesc}>
-                Quản lý người dùng, phân quyền và cập nhật trạng thái tài khoản
-              </div>
-            </Link>
-          )}
-
-          {!user && (
-            <Link to="/login" style={styles.card} onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-8px)';
-              e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.15)';
-            }} onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
-            }}>
-              <div style={{ ...styles.cardIcon, fontSize: '0' }}></div>
-              <div style={styles.cardTitle}>Đăng nhập</div>
-              <div style={styles.cardDesc}>
-                Đăng nhập để truy cập đầy đủ các tính năng của hệ thống
-              </div>
-            </Link>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );

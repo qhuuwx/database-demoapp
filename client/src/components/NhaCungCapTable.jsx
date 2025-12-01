@@ -89,6 +89,7 @@ const NhaCungCapTable = ({ list, onEdit, onDelete, viewMode = 'ncc', onSort, sor
             <SortableHeader field="PhuongXa">Phường xã</SortableHeader>
             <SortableHeader field="TinhThanhPho">Tỉnh/TP</SortableHeader>
             <SortableHeader field="SoDienThoai">Số ĐT</SortableHeader>
+            {isNhanVien && <th style={{ textAlign: 'center' }}>Hành động</th>}
           </tr>
         </thead>
         <tbody>
@@ -101,10 +102,28 @@ const NhaCungCapTable = ({ list, onEdit, onDelete, viewMode = 'ncc', onSort, sor
               <td>{item.PhuongXa}</td>
               <td>{item.TinhThanhPho}</td>
               <td>{item.SoDienThoai}</td>
+              {isNhanVien && (
+                <td style={{ textAlign: 'center' }}>
+                  <button 
+                    onClick={() => onEdit(item)} 
+                    className="btn btn-info"
+                    style={{ padding: '6px 12px', fontSize: '13px', marginRight: '6px' }}
+                  >
+                    Sửa
+                  </button>
+                  <button 
+                    onClick={() => onDelete(item.ID)} 
+                    className="btn btn-danger"
+                    style={{ padding: '6px 12px', fontSize: '13px' }}
+                  >
+                    Xóa
+                  </button>
+                </td>
+              )}
             </tr>
           )) : (
             <tr>
-              <td colSpan="7" style={{ textAlign: 'center', padding: '40px', color: '#6c757d' }}>
+              <td colSpan={isNhanVien ? "8" : "7"} style={{ textAlign: 'center', padding: '40px', color: '#6c757d' }}>
                 Chưa có nhà cung cấp nào
               </td>
             </tr>
