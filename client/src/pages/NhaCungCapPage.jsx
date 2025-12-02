@@ -61,15 +61,26 @@ const NhaCungCapPage = () => {
     fetchList();
   };
 
-  // Tìm kiếm sản phẩm theo nhà cung cấp
+  // Tìm kiếm nhà cung cấp theo khu vực
   const handleSearchSanPham = async () => {
     if (!searchKeyword.trim()) {
-      alert('Vui lòng nhập từ khóa tên nhà cung cấp');
+      alert('Vui lòng nhập từ khóa Tỉnh/Thành phố');
       return;
     }
-    const data = await nhaCungCapService.searchSanPham(searchKeyword);
-    setList(Array.isArray(data) ? data : []);
-    setViewMode('sanpham');
+    try {
+      // Lọc từ danh sách hiện tại theo Tỉnh/Thành phố
+      const filtered = list.filter(item => 
+        item.TinhThanhPho && item.TinhThanhPho.toLowerCase().includes(searchKeyword.toLowerCase())
+      );
+      setList(filtered);
+      
+      if (filtered.length === 0) {
+        alert('Không tìm thấy nhà cung cấp nào ở khu vực này');
+      }
+    } catch (error) {
+      console.error('Error searching:', error);
+      alert('Lỗi khi tìm kiếm');
+    }
   };
 
   // Reset về danh sách nhà cung cấp ban đầu
@@ -117,7 +128,7 @@ const NhaCungCapPage = () => {
           <input 
             type="text" 
             className="form-control"
-            placeholder="Nhập Tỉnh/Thành Phố..."
+            placeholder="Nhập Tỉnh/Thành Phố... (VD: TP.HCM, Hà Nội)"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSearchSanPham()}
@@ -127,6 +138,12 @@ const NhaCungCapPage = () => {
             className="btn btn-success"
           >
             Tìm kiếm
+          </button>
+          <button 
+            onClick={handleReset}
+            className="btn btn-secondary"
+          >
+            Đặt lại
           </button>
           
           {isNhanVien && (

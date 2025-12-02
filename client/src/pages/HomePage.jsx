@@ -87,19 +87,29 @@ function HomePage() {
         )}
 
         {!user && (
-          <Link to="/login" style={styles.card} onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-8px)';
-            e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.15)';
-          }} onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
-          }}>
-            <div style={{ ...styles.cardIcon, fontSize: '0' }}></div>
-            <div style={styles.cardTitle}>Đăng nhập</div>
-            <div style={styles.cardDesc}>
-              Đăng nhập để truy cập đầy đủ các tính năng của hệ thống
-            </div>
-          </Link>
+          <div style={{ marginTop: '32px' }}>
+            <Link 
+              to="/login" 
+              style={{
+                display: 'inline-block',
+                background: 'linear-gradient(135deg, #3498db 100%)',
+                color: 'white',
+                padding: '90px 150px',
+                borderRadius: '12px',
+                fontSize: '50px',
+                fontWeight: '600',
+                textDecoration: 'none',
+                boxShadow: '0 4px 20px rgba(102, 126, 234, 0.4)',
+                transition: 'all 0.3s ease'
+              }}
+              
+            >
+              Đăng nhập
+            </Link>
+            <p style={{ marginTop: '16px', color: '#7f8c8d', fontSize: '14px' }}>
+              Chưa có tài khoản? <Link to="/register" style={{ color: '#667eea', fontWeight: '600', textDecoration: 'none' }}>Đăng ký ngay</Link>
+            </p>
+          </div>
         )}
       </div>
     </div>
