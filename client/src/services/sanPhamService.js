@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://10.191.92.56:5000/api/sanpham/';
+const API_URL = 'http://localhost:5000/api/sanpham/';
 
 const sanPhamService = {
   getAll: async (token) => {
@@ -30,6 +30,13 @@ const sanPhamService = {
   searchSanPhamTheoNCC: async (tuKhoaTenNCC, token) => {
     const res = await axios.get(`${API_URL}search-products`, {
       params: { tuKhoaTenNCC },
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return res.data;
+  },
+  filter: async (filters, token) => {
+    const res = await axios.get(`${API_URL}filter`, {
+      params: filters,
       headers: { Authorization: `Bearer ${token}` }
     });
     return res.data;
