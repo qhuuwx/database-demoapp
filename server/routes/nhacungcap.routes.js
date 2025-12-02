@@ -6,6 +6,9 @@ console.log('NhaCungCap routes loaded');
 // Lấy danh sách nhà cung cấp
 router.get('/', nhaCungCapController.getAllNhaCungCap);
 
+// Tìm kiếm nhà cung cấp theo khu vực (query string)
+router.get('/search-products', nhaCungCapController.searchNCCByArea);
+
 // Thêm mới nhà cung cấp (gọi thủ tục)
 router.post('/', nhaCungCapController.createNhaCungCap);
 // Sửa nhà cung cấp (gọi thủ tục)
