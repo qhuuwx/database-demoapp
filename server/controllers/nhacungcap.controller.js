@@ -75,3 +75,22 @@ exports.findNhaCungCapByArea = async (req, res) => {
 		res.status(500).json({ message: err.message });
 	}
 };
+
+exports.searchNCCByArea = async (req, res) => {
+	try {
+		const { tuKhoaTenNCC } = req.query;
+		if (!tuKhoaTenNCC) {
+			return res.status(400).json({ message: 'Vui lòng nhập từ khóa tìm kiếm' });
+		}
+		const SoLuongToiThieu = req.query.SoLuongToiThieu ? parseInt(req.query.SoLuongToiThieu) : 1;
+		const [results] = await sequelize.query(
+			'EXEC proc_ThongKeNCCTheoKhuVuc :TinhThanhPho, :SoLuongToiThieu',
+			{
+				replacements: { TinhThanhPho: tuKhoaTenNCC, SoLuongToiThieu }
+			}
+		);
+		res.json(results);
+	} catch (err) {
+		res.status(500).json({ message: err.message });
+	}
+};
