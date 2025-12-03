@@ -12,8 +12,6 @@ const defaultData = {
 const TINH_THANH_PHO = [
   'An Giang',
   'Bắc Ninh',
-  'Bình Phước',
-  'Bình Thuận',
   'Cà Mau',
   'Cao Bằng',
   'Điện Biên',
@@ -21,10 +19,10 @@ const TINH_THANH_PHO = [
   'Đồng Nai',
   'Đồng Tháp',
   'Gia Lai',
-  'Hà Nội',
   'Hà Tĩnh',
   'Hưng Yên',
-  'Khánh Hòa',
+  'Khánh Hoà',
+  'Lai Châu',
   'Lâm Đồng',
   'Lạng Sơn',
   'Lào Cai',
@@ -37,13 +35,15 @@ const TINH_THANH_PHO = [
   'Sơn La',
   'Tây Ninh',
   'Thái Nguyên',
-  'Thanh Hóa',
-  'TP Đà Nẵng',
-  'TP Hải Phòng',
-  'TP Hồ Chí Minh',
-  'TP Huế',
+  'Thanh Hoá',
   'Tuyên Quang',
-  'Vĩnh Long'
+  'Vĩnh Long',
+  'TP Cần Thơ',
+  'TP Đà Nẵng',
+  'TP Hà Nội',
+  'TP Hải Phòng',
+  'TP.HCM',
+  'TP Huế'
 ];
 
 const NhaCungCapForm = ({ initial, onSubmit, onClose }) => {

@@ -15,6 +15,9 @@ function SanPhamPage() {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [sortField, setSortField] = useState('MaSanPham');
   const [sortOrder, setSortOrder] = useState('asc');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [minRating, setMinRating] = useState('');
 
   const isNhanVien = user?.VaiTro === 'NhanVien';
 
@@ -58,7 +61,30 @@ function SanPhamPage() {
 
   const handleReset = () => {
     setSearchKeyword('');
+    setMinPrice('');
+    setMaxPrice('');
+    setMinRating('');
     setFilteredList(sanPhamList);
+  };
+
+  const handleFilter = async () => {
+    try {
+      const filters = {};
+      if (minPrice !== '' && minPrice !== null) filters.minPrice = minPrice;
+      if (maxPrice !== '' && maxPrice !== null) filters.maxPrice = maxPrice;
+      if (minRating !== '' && minRating !== null) filters.minRating = minRating;
+      
+      if (Object.keys(filters).length === 0) {
+        setFilteredList(sanPhamList);
+        return;
+      }
+      
+      const results = await sanPhamService.filter(filters, token);
+      setFilteredList(results);
+    } catch (error) {
+      console.error('Error filtering products:', error);
+      alert('Lỗi khi lọc sản phẩm: ' + (error.response?.data?.message || error.message));
+    }
   };
 
   const handleSort = (field) => {
@@ -141,7 +167,7 @@ function SanPhamPage() {
         <h3 style={{ marginBottom: 16, fontSize: '18px', fontWeight: '600', color: '#2c3e50' }}>
           Tìm kiếm sản phẩm theo nhà cung cấp
         </h3>
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
           <input
             type="text"
             className="form-control"
@@ -168,6 +194,79 @@ function SanPhamPage() {
               Thêm mới
             </button>
           )}
+        </div>
+
+        {/* Filter Section */}
+        <div style={{ 
+          borderTop: '1px solid #e9ecef', 
+          paddingTop: '16px',
+          marginTop: '16px'
+        }}>
+          <h3 style={{ marginBottom: 16, fontSize: '18px', fontWeight: '600', color: '#2c3e50' }}>
+            Lọc sản phẩm
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '12px' }}>
+            <div>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500', color: '#495057' }}>
+                Giá tối thiểu (đ)
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                placeholder="Ví dụ: 100000"
+                value={minPrice}
+                onChange={(e) => setMinPrice(e.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500', color: '#495057' }}>
+                Giá tối đa (đ)
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                placeholder="Ví dụ: 500000"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(e.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500', color: '#495057' }}>
+                Đánh giá tối thiểu
+              </label>
+              <select
+                className="form-control"
+                value={minRating}
+                onChange={(e) => setMinRating(e.target.value)}
+                style={{ width: '100%' }}
+              >
+                <option value="">Tất cả</option>
+                <option value="1">⭐ 1 sao trở lên</option>
+                <option value="2">⭐ 2 sao trở lên</option>
+                <option value="3">⭐ 3 sao trở lên</option>
+                <option value="4">⭐ 4 sao trở lên</option>
+                <option value="5">⭐ 5 sao</option>
+              </select>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button 
+              onClick={handleFilter}
+              className="btn btn-primary"
+              style={{ padding: '11px 24px' }}
+            >
+              Áp dụng lọc
+            </button>
+            <button 
+              onClick={handleReset}
+              className="btn btn-secondary"
+              style={{ padding: '11px 24px' }}
+            >
+              Đặt lại
+            </button>
+          </div>
         </div>
       </div>
 

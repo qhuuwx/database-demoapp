@@ -32,6 +32,13 @@ const sanPhamService = {
       headers: { Authorization: `Bearer ${token}` }
     });
     return res.data;
+  },
+  filter: async (filters, token) => {
+    const res = await axios.get(`${API_URL}filter`, {
+      params: filters,
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return res.data;
   }
 };
 
