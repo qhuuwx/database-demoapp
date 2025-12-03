@@ -160,7 +160,7 @@ const NhaCungCapPage = () => {
         <div className="error-modal-overlay" onClick={() => setShowErrorModal(false)}>
           <div className="error-modal" onClick={(e) => e.stopPropagation()}>
             <div className="error-modal-header">
-              <span style={{ fontSize: '24px', lineHeight: '1' }}>⚠️</span>
+              <span style={{ fontSize: '24px', lineHeight: '1' }}></span>
               <div style={{ flex: 1 }}>
                 <h3>Không thể xóa nhà cung cấp</h3>
                 <p style={{ margin: 0, fontSize: '14px', color: '#718096' }}>
