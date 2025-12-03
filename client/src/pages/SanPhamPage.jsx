@@ -15,8 +15,8 @@ function SanPhamPage() {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [sortField, setSortField] = useState('MaSanPham');
   const [sortOrder, setSortOrder] = useState('asc');
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(1000000);
   const [minRating, setMinRating] = useState('');
 
   const isNhanVien = user?.VaiTro === 'NhanVien';
@@ -74,8 +74,8 @@ function SanPhamPage() {
 
   const handleReset = () => {
     setSearchKeyword('');
-    setMinPrice('');
-    setMaxPrice('');
+    setMinPrice(0);
+    setMaxPrice(1000000);
     setMinRating('');
     setFilteredList(sanPhamList);
   };
@@ -164,7 +164,7 @@ function SanPhamPage() {
           <input
             type="text"
             className="form-control"
-            placeholder="Nhập từ khóa tên nhà cung cấp..."
+            placeholder="Tất cả..."
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSearchSanPham()}
@@ -191,35 +191,83 @@ function SanPhamPage() {
           <h3 style={{ marginBottom: 16, fontSize: '18px', fontWeight: '600', color: '#2c3e50' }}>
             Lọc sản phẩm
           </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', marginBottom: '12px' }}>
+            {/* Price Range Slider */}
             <div>
-              <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500', color: '#495057' }}>
-                Giá tối thiểu (đ)
+              <label style={{ display: 'block', marginBottom: '12px', fontSize: '14px', fontWeight: '500', color: '#495057' }}>
+                Khoảng giá: {minPrice.toLocaleString('vi-VN')}đ - {maxPrice.toLocaleString('vi-VN')}đ
               </label>
-              <input
-                type="number"
-                className="form-control"
-                placeholder="Ví dụ: 100000"
-                value={minPrice}
-                onChange={(e) => setMinPrice(e.target.value)}
-                style={{ width: '100%' }}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearchSanPham()}
-              />
+              <div style={{ position: 'relative', padding: '0 8px' }}>
+                <div style={{ 
+                  position: 'relative', 
+                  height: '6px', 
+                  background: '#ddd', 
+                  borderRadius: '3px',
+                  marginTop: '8px'
+                }}>
+                  <div style={{
+                    position: 'absolute',
+                    height: '6px',
+                    background: 'linear-gradient(to right, #3498db, #3498db)',
+                    borderRadius: '3px',
+                    left: `${(minPrice/1000000)*100}%`,
+                    right: `${100-(maxPrice/1000000)*100}%`
+                  }} />
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="1000000"
+                  step="10000"
+                  value={minPrice}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    if (val <= maxPrice - 50000) setMinPrice(val);
+                  }}
+                  style={{
+                    position: 'absolute',
+                    width: '100%',
+                    height: '6px',
+                    top: '0',
+                    left: '0',
+                    background: 'transparent',
+                    pointerEvents: 'all',
+                    outline: 'none',
+                    appearance: 'none',
+                    WebkitAppearance: 'none',
+                    cursor: 'pointer',
+                    zIndex: minPrice > maxPrice - 100000 ? 5 : 3
+                  }}
+                />
+                <input
+                  type="range"
+                  min="0"
+                  max="1000000"
+                  step="10000"
+                  value={maxPrice}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    if (val >= minPrice + 10000) setMaxPrice(val);
+                  }}
+                  style={{
+                    position: 'absolute',
+                    width: '100%',
+                    height: '6px',
+                    top: '0',
+                    left: '0',
+                    background: 'transparent',
+                    pointerEvents: 'all',
+                    outline: 'none',
+                    appearance: 'none',
+                    WebkitAppearance: 'none',
+                    cursor: 'pointer',
+                    zIndex: 4
+                  }}
+                />
+              </div>
             </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500', color: '#495057' }}>
-                Giá tối đa (đ)
-              </label>
-              <input
-                type="number"
-                className="form-control"
-                placeholder="Ví dụ: 500000"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(e.target.value)}
-                style={{ width: '100%' }}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearchSanPham()}
-              />
-            </div>
+            
+            {/* Rating Filter */}
             <div>
               <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500', color: '#495057' }}>
                 Đánh giá tối thiểu
@@ -228,8 +276,7 @@ function SanPhamPage() {
                 className="form-control"
                 value={minRating}
                 onChange={(e) => setMinRating(e.target.value)}
-                style={{ width: '100%' }}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearchSanPham()}
+                style={{ width: '100%', padding: '10px' }}
               >
                 <option value="">Tất cả</option>
                 <option value="1">⭐ 1 sao trở lên</option>
@@ -240,6 +287,62 @@ function SanPhamPage() {
               </select>
             </div>
           </div>
+          
+          {/* Add CSS for range slider thumb */}
+          <style>{`
+            input[type="range"]::-webkit-slider-runnable-track {
+              background: transparent;
+            }
+            
+            input[type="range"]::-moz-range-track {
+              background: transparent;
+            }
+            
+            input[type="range"]::-webkit-slider-thumb {
+              -webkit-appearance: none;
+              appearance: none;
+              width: 20px;
+              height: 20px;
+              background: white;
+              cursor: pointer;
+              border-radius: 50%;
+              border: 3px solid #667eea;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+              margin-top: -7px;
+            }
+            
+            input[type="range"]::-moz-range-thumb {
+              width: 20px;
+              height: 20px;
+              background: white;
+              cursor: pointer;
+              border-radius: 50%;
+              border: 3px solid #667eea;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            }
+            
+            input[type="range"]::-webkit-slider-thumb:hover {
+              border-color: #764ba2;
+              transform: scale(1.15);
+              box-shadow: 0 3px 12px rgba(102, 126, 234, 0.4);
+            }
+            
+            input[type="range"]::-moz-range-thumb:hover {
+              border-color: #764ba2;
+              transform: scale(1.15);
+              box-shadow: 0 3px 12px rgba(102, 126, 234, 0.4);
+            }
+            
+            input[type="range"]::-webkit-slider-thumb:active {
+              border-color: #764ba2;
+              transform: scale(1.25);
+            }
+            
+            input[type="range"]::-moz-range-thumb:active {
+              border-color: #764ba2;
+              transform: scale(1.25);
+            }
+          `}</style>
           <div style={{ display: 'flex', gap: '12px' }}>
             <button
               onClick={handleSearchSanPham}
