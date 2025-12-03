@@ -12,13 +12,12 @@ export function AuthProvider({ children }) {
     if (storedToken) {
       setToken(storedToken);
       authService.getCurrentUser(storedToken)
-        .then((userData) => {setUser(userData);})
+        .then((userData) => { setUser(userData); })
         .catch(() => {
           setUser(null);
         });
     }
   }, []);
-  console.log('AuthContext user:', user);
   const login = async (account, password) => {
     try {
       let res;
@@ -32,10 +31,11 @@ export function AuthProvider({ children }) {
         setUser(res.user);
         localStorage.setItem('token', res.token);
         return { success: true };
+      } else {
+        return { success: false, message: "Không thể tạo mã xác thực" };
       }
-      return { success: false, message: res.message };
     } catch (err) {
-      return { success: false, message: 'Lỗi đăng nhập' };
+      return { success: false, message: err.response?.data?.message };
     }
   };
 
@@ -51,7 +51,7 @@ export function AuthProvider({ children }) {
       if (res.user) return { success: true };
       return { success: false, message: res.message };
     } catch (err) {
-      return { success: false, message: 'Lỗi đăng ký' };
+      return { success: false, message: err.response?.data?.message };
     }
   };
   return (
