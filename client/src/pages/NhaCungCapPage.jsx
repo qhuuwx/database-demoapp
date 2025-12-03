@@ -13,6 +13,8 @@ const NhaCungCapPage = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [sortField, setSortField] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const isNhanVien = user?.VaiTro === 'NhanVien';
 
   const fetchList = async () => {
@@ -43,14 +45,17 @@ const NhaCungCapPage = () => {
       const response = await nhaCungCapService.remove(id);
       if (response && response.success) {
         alert('Xóa nhà cung cấp thành công!');
-      }else{
-        alert(`${response.message}`);
+        fetchList();
+      } else {
+        // Hiển thị popup lỗi
+        setErrorMessage(response.message || 'Nhà cung cấp này đang cung cấp sản phẩm trong hệ thống');
+        setShowErrorModal(true);
       }
-      fetchList();
     } catch (error) {
       // Xử lý lỗi từ backend
-      const errorMessage = error.response?.data?.message || error.message || 'Không thể xóa nhà cung cấp';
-      alert(`Lỗi: ${errorMessage}\n\nNhà cung cấp này có thể đang cung cấp sản phẩm trong hệ thống.`);
+      const msg = error.response?.data?.message || error.message || 'Không thể xóa nhà cung cấp';
+      setErrorMessage(msg);
+      setShowErrorModal(true);
       console.error('Error deleting supplier:', error);
     }
   };
@@ -146,6 +151,35 @@ const NhaCungCapPage = () => {
         <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && setShowForm(false)}>
           <div className="modal-content">
             <NhaCungCapForm initial={editing} onSubmit={handleSubmit} onClose={() => setShowForm(false)} />
+          </div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <div className="error-modal-overlay" onClick={() => setShowErrorModal(false)}>
+          <div className="error-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="error-modal-header">
+              <span style={{ fontSize: '24px', lineHeight: '1' }}>⚠️</span>
+              <div style={{ flex: 1 }}>
+                <h3>Không thể xóa nhà cung cấp</h3>
+                <p style={{ margin: 0, fontSize: '14px', color: '#718096' }}>
+                  {errorMessage}
+                </p>
+              </div>
+            </div>
+
+            <div className="error-detail-box">
+              <p>
+                Nhà cung cấp này đang cung cấp sản phẩm trong hệ thống. Vui lòng xóa các sản phẩm liên quan trước.
+              </p>
+            </div>
+
+            <div className="error-modal-footer">
+              <button onClick={() => setShowErrorModal(false)} className="btn btn-primary">
+                Đóng
+              </button>
+            </div>
           </div>
         </div>
       )}
