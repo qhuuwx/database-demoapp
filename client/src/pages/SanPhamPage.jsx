@@ -47,11 +47,24 @@ function SanPhamPage() {
 
   const handleSearchSanPham = async () => {
     try {
-      if (searchKeyword.trim() === '') {
+      if (searchKeyword.trim() === '' && minPrice === '' && maxPrice === '' && minRating === '') {
         setFilteredList(sanPhamList);
       } else {
-        const results = await sanPhamService.searchSanPhamTheoNCC(searchKeyword, token);
-        setFilteredList(results);
+        let results = [];
+        if (searchKeyword.trim() !== '') {
+          results = await sanPhamService.searchSanPhamTheoNCC(searchKeyword, token);
+        } else {
+          results = sanPhamList;
+        }
+        const filteredResults = results.filter(item => {
+          const priceValid =
+            (minPrice === '' || item.Gia >= parseFloat(minPrice)) &&
+            (maxPrice === '' || item.Gia <= parseFloat(maxPrice));
+          const ratingValid =
+            minRating === '' || item.DiemDanhGiaTB >= parseInt(minRating);
+          return priceValid && ratingValid;
+        });
+        setFilteredList(filteredResults);
       }
     } catch (error) {
       console.error('Error searching products:', error);
@@ -67,26 +80,6 @@ function SanPhamPage() {
     setFilteredList(sanPhamList);
   };
 
-  const handleFilter = async () => {
-    try {
-      const filters = {};
-      if (minPrice !== '' && minPrice !== null) filters.minPrice = minPrice;
-      if (maxPrice !== '' && maxPrice !== null) filters.maxPrice = maxPrice;
-      if (minRating !== '' && minRating !== null) filters.minRating = minRating;
-      
-      if (Object.keys(filters).length === 0) {
-        setFilteredList(sanPhamList);
-        return;
-      }
-      
-      const results = await sanPhamService.filter(filters, token);
-      setFilteredList(results);
-    } catch (error) {
-      console.error('Error filtering products:', error);
-      alert('Lỗi khi lọc sản phẩm: ' + (error.response?.data?.message || error.message));
-    }
-  };
-
   const handleSort = (field) => {
     const newOrder = sortField === field && sortOrder === 'asc' ? 'desc' : 'asc';
     setSortField(field);
@@ -95,17 +88,17 @@ function SanPhamPage() {
     const sorted = [...filteredList].sort((a, b) => {
       let aVal = a[field];
       let bVal = b[field];
-      
+
       if (typeof aVal === 'string') {
         aVal = aVal.toLowerCase();
         bVal = bVal.toLowerCase();
       }
-      
+
       if (aVal < bVal) return newOrder === 'asc' ? -1 : 1;
       if (aVal > bVal) return newOrder === 'asc' ? 1 : -1;
       return 0;
     });
-    
+
     setFilteredList(sorted);
   };
 
@@ -139,7 +132,7 @@ function SanPhamPage() {
 
   const handleDelete = async (id) => {
     if (!window.confirm('Bạn có chắc muốn xóa sản phẩm này?')) return;
-    
+
     try {
       await sanPhamService.remove(id, token);
       alert('Xóa sản phẩm thành công');
@@ -152,15 +145,15 @@ function SanPhamPage() {
 
   return (
     <div className="page-container">
-      <h2 style={{ marginBottom: 24, fontSize: '28px', fontWeight: '700' }}>
+      <h2 style={{ marginBottom: 24, fontSize: '28px', fontWeight: '700', width:'80vw' }}>
         Quản lý Sản phẩm
       </h2>
 
       {/* Search Section */}
-      <div className="search-section" style={{ 
-        background: 'white', 
-        padding: '24px', 
-        borderRadius: '12px', 
+      <div className="search-section" style={{
+        background: 'white',
+        padding: '24px',
+        borderRadius: '12px',
         marginBottom: '24px',
         boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
       }}>
@@ -177,16 +170,9 @@ function SanPhamPage() {
             onKeyPress={(e) => e.key === 'Enter' && handleSearchSanPham()}
             style={{ flex: 1 }}
           />
-          <button 
-            onClick={handleSearchSanPham}
-            className="btn btn-primary"
-            style={{ padding: '11px 24px', whiteSpace: 'nowrap' }}
-          >
-            Tìm kiếm
-          </button>
-          
+
           {isNhanVien && (
-            <button 
+            <button
               onClick={handleAdd}
               className="btn btn-success"
               style={{ padding: '11px 24px', whiteSpace: 'nowrap' }}
@@ -197,8 +183,8 @@ function SanPhamPage() {
         </div>
 
         {/* Filter Section */}
-        <div style={{ 
-          borderTop: '1px solid #e9ecef', 
+        <div style={{
+          borderTop: '1px solid #e9ecef',
           paddingTop: '16px',
           marginTop: '16px'
         }}>
@@ -217,6 +203,7 @@ function SanPhamPage() {
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
                 style={{ width: '100%' }}
+                onKeyPress={(e) => e.key === 'Enter' && handleSearchSanPham()}
               />
             </div>
             <div>
@@ -230,6 +217,7 @@ function SanPhamPage() {
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
                 style={{ width: '100%' }}
+                onKeyPress={(e) => e.key === 'Enter' && handleSearchSanPham()}
               />
             </div>
             <div>
@@ -241,6 +229,7 @@ function SanPhamPage() {
                 value={minRating}
                 onChange={(e) => setMinRating(e.target.value)}
                 style={{ width: '100%' }}
+                onKeyPress={(e) => e.key === 'Enter' && handleSearchSanPham()}
               >
                 <option value="">Tất cả</option>
                 <option value="1">⭐ 1 sao trở lên</option>
@@ -252,14 +241,14 @@ function SanPhamPage() {
             </div>
           </div>
           <div style={{ display: 'flex', gap: '12px' }}>
-            <button 
-              onClick={handleFilter}
+            <button
+              onClick={handleSearchSanPham}
               className="btn btn-primary"
-              style={{ padding: '11px 24px' }}
+              style={{ padding: '11px 24px', whiteSpace: 'nowrap' }}
             >
-              Áp dụng lọc
+              Tìm kiếm
             </button>
-            <button 
+            <button
               onClick={handleReset}
               className="btn btn-secondary"
               style={{ padding: '11px 24px' }}

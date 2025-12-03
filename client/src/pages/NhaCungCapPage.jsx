@@ -14,7 +14,7 @@ const NhaCungCapPage = () => {
   const [sortField, setSortField] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
   const isNhanVien = user?.VaiTro === 'NhanVien';
-  
+
   const fetchList = async () => {
     const data = await nhaCungCapService.getAll();
     setList(Array.isArray(data) ? data : []);
@@ -38,10 +38,14 @@ const NhaCungCapPage = () => {
     if (!window.confirm('Bạn có chắc chắn muốn xóa nhà cung cấp này không?')) {
       return;
     }
-    
+
     try {
-      await nhaCungCapService.remove(id);
-      alert('Xóa nhà cung cấp thành công!');
+      const response = await nhaCungCapService.remove(id);
+      if (response && response.success) {
+        alert('Xóa nhà cung cấp thành công!');
+      }else{
+        alert(`${response.message}`);
+      }
       fetchList();
     } catch (error) {
       // Xử lý lỗi từ backend
@@ -60,36 +64,13 @@ const NhaCungCapPage = () => {
     setShowForm(false);
     fetchList();
   };
-
-  // Tìm kiếm nhà cung cấp theo khu vực
-  const handleSearchSanPham = async () => {
-    if (!searchKeyword.trim()) {
-      alert('Vui lòng nhập từ khóa Tỉnh/Thành phố');
+  const handleSeachNCCByArea = async () => {
+    if (searchKeyword.trim() === '') {
+      fetchList();
       return;
     }
-    try {
-      // Lọc từ danh sách hiện tại theo Tỉnh/Thành phố
-      const filtered = list.filter(item => 
-        item.TinhThanhPho && item.TinhThanhPho.toLowerCase().includes(searchKeyword.toLowerCase())
-      );
-      setList(filtered);
-      
-      if (filtered.length === 0) {
-        alert('Không tìm thấy nhà cung cấp nào ở khu vực này');
-      }
-    } catch (error) {
-      console.error('Error searching:', error);
-      alert('Lỗi khi tìm kiếm');
-    }
-  };
-
-  // Reset về danh sách nhà cung cấp ban đầu
-  const handleReset = () => {
-    setSearchKeyword('');
-    setSortField('');
-    setSortOrder('asc');
-    setViewMode('ncc');
-    fetchList();
+    const data = await nhaCungCapService.thongKeTheoKhuVuc(searchKeyword);
+    setList(Array.isArray(data) ? data : []);
   };
 
   // Sắp xếp dữ liệu
@@ -97,58 +78,52 @@ const NhaCungCapPage = () => {
     const newOrder = sortField === field && sortOrder === 'asc' ? 'desc' : 'asc';
     setSortField(field);
     setSortOrder(newOrder);
-    
+
     const sortedList = [...list].sort((a, b) => {
       let aVal = a[field];
       let bVal = b[field];
-      
+
       if (typeof aVal === 'string') {
         aVal = aVal.toLowerCase();
         bVal = bVal.toLowerCase();
       }
-      
+
       if (aVal < bVal) return newOrder === 'asc' ? -1 : 1;
       if (aVal > bVal) return newOrder === 'asc' ? 1 : -1;
       return 0;
     });
-    
+
     setList(sortedList);
   };
 
   return (
     <div className="page-container" style={{ margin: '30px auto' }}>
-      <h2 style={{ marginBottom: 32, fontSize: '28px', fontWeight: '600', letterSpacing: '-0.02em' }}>
+      <h2 style={{ marginBottom: 32, fontSize: '28px', fontWeight: '600', letterSpacing: '-0.02em', width: '80vw' }}>
         {isNhanVien ? 'Quản lý Nhà cung cấp' : 'Danh sách Nhà cung cấp'}
       </h2>
-      
+
       {/* Phần điều khiển tìm kiếm */}
       <div className="search-box">
         <h3 style={{ marginBottom: 20, fontSize: '16px', fontWeight: '600' }}>Tìm kiếm Nhà cung cấp theo khu vực</h3>
         <div className="search-controls">
-          <input 
-            type="text" 
+          <input
+            type="text"
             className="form-control"
-            placeholder="Nhập Tỉnh/Thành Phố... (VD: TP.HCM, Hà Nội)"
+            placeholder="Nhập Tỉnh/Thành Phố..."
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSearchSanPham()}
+            onKeyPress={(e) => e.key === 'Enter' && handleSeachNCCByArea()}
           />
-          <button 
-            onClick={handleSearchSanPham}
+          <button
+            onClick={handleSeachNCCByArea}
             className="btn btn-success"
           >
             Tìm kiếm
           </button>
-          <button 
-            onClick={handleReset}
-            className="btn btn-secondary"
-          >
-            Đặt lại
-          </button>
-          
+
           {isNhanVien && (
-            <button 
-              onClick={handleAdd} 
+            <button
+              onClick={handleAdd}
               className="btn btn-primary"
             >
               Thêm mới
@@ -157,16 +132,16 @@ const NhaCungCapPage = () => {
         </div>
       </div>
 
-      <NhaCungCapTable 
-        list={list} 
-        onEdit={handleEdit} 
+      <NhaCungCapTable
+        list={list}
+        onEdit={handleEdit}
         onDelete={handleDelete}
         viewMode={viewMode}
         onSort={handleSort}
         sortField={sortField}
         sortOrder={sortOrder}
       />
-      
+
       {showForm && (
         <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && setShowForm(false)}>
           <div className="modal-content">

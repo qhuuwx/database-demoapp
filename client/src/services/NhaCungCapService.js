@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api/nhacungcap/';
-
+const storedToken = localStorage.getItem('token');
 const nhaCungCapService = {
   getAll: async () => {
     const res = await axios.get(API_URL);
@@ -17,18 +17,14 @@ const nhaCungCapService = {
     return res.data;
   },
   remove: async (id) => {
-    const res = await axios.delete(`${API_URL}/${id}`);
+    console.log('Delete request for ID:', id);
+    const res = await axios.delete(`${API_URL}${id}`);
+    console.log('Delete response data:', res.data);
     return res.data;
   },
-  searchSanPham: async (tuKhoaTenNCC) => {
-    const res = await axios.get(`${API_URL}search-products`, {
-      params: { tuKhoaTenNCC }
-    });
-    return res.data;
-  },
-  thongKeTheoKhuVuc: async (thanhPho, soLuongToiThieu) => {
-    const res = await axios.get(`${API_URL}statistics`, {
-      params: { thanhPho, soLuongToiThieu }
+  thongKeTheoKhuVuc: async (thanhPho) => {
+    const res = await axios.get(`${API_URL}thongke/${thanhPho}`, {
+      headers: { Authorization: `Bearer ${storedToken}` }
     });
     return res.data;
   }
