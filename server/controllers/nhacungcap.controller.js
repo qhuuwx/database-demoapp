@@ -51,7 +51,7 @@ exports.deleteNhaCungCap = async (req, res) => {
 			replacements: { MaNhaCungCap }
 		});
 		if (resquery[1] === 0) {
-			return res.json({ message: 'Nhà cung cấp này có thể đang cung cấp sản phẩm trong hệ thống.' });
+			return res.json({ message: 'Nhà cung cấp này đang cung cấp sản phẩm trong hệ thống.' });
 		} else {
 			res.json({ success: true, message: 'Xóa nhà cung cấp thành công' });
 		}

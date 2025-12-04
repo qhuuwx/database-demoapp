@@ -8,7 +8,8 @@ class TaiKhoan extends Model { }
 TaiKhoan.init({
   MaTaiKhoan: {
     type: DataTypes.STRING,
-    primaryKey: true
+    primaryKey: true,
+    autoIncrement: true
   },
   TenTaiKhoan: {
     type: DataTypes.STRING,
@@ -45,7 +46,8 @@ TaiKhoan.init({
   sequelize,
   modelName: 'TaiKhoan',
   tableName: 'TaiKhoan',
-  timestamps: false
+  timestamps: false,
+  id: false
 });
 
 // Hash password before save
