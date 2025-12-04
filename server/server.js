@@ -3,8 +3,6 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const sequelize = require('./config/database');
-const TaiKhoan = require('./models/TaiKhoan');
-const Content = require('./models/Content');
 
 const app = express();
 app.use(express.json());
@@ -13,7 +11,6 @@ app.use(cors({ origin: 'http://localhost:3000', credentials: true })); // CORS c
 // Import routes
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/admin', require('./routes/admin.routes'));
-app.use('/api/contents', require('./routes/content.routes'));
 app.use('/api/nhacungcap', require('./routes/nhacungcap.routes'));
 app.use('/api/sanpham', require('./routes/sanpham.routes.js'));
 

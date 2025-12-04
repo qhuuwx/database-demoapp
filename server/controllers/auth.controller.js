@@ -2,6 +2,7 @@
 const TaiKhoan = require('../models/TaiKhoan');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const sequelize = require('../config/database');
 
 exports.register = async (req, res) => {
   try {
@@ -12,21 +13,25 @@ exports.register = async (req, res) => {
     const existUser = await TaiKhoan.findOne({ where: { TenTaiKhoan } });
     if (existEmail || existUser) {
       console.log('Duplicate email or username:', Email, TenTaiKhoan);
-      return res.status(400).json({ message: 'Email or username already exists' });
+      return res.status(400).json({ message: 'Tài khoản đã tồn tại' });
     }
     // Create user
+    const hashedPassword = await bcrypt.hash(MatKhau, 10);
     try {
-      await TaiKhoan.create({ TenTaiKhoan, MatKhau, Email, VaiTro }, { returning: false });
+      await sequelize.query(
+        'INSERT INTO TaiKhoan (TenTaiKhoan, MatKhau, Email, VaiTro) VALUES (:TenTaiKhoan, :MatKhau, :Email, :VaiTro)',
+        { replacements: { TenTaiKhoan, MatKhau: hashedPassword, Email, VaiTro } }
+      )
       const createdUser = await TaiKhoan.findOne({ where: { Email } });
       console.log('User created:', createdUser);
-      res.json({ user: createdUser, message: 'Register successful' });
+      res.json({ success: true, user: createdUser, message: 'Register successful' });
     } catch (dbErr) {
       console.error('DB error when creating user:', dbErr);
-      res.status(500).json({ message: dbErr.message });
+      res.json({ message: dbErr.message });
     }
   } catch (err) {
     console.error('Register error:', err);
-    res.status(500).json({ message: err.message });
+    res.json({ message: err.message });
   }
 };
 
@@ -51,7 +56,7 @@ exports.login = async (req, res) => {
     }
     const token = jwt.sign({ MaTaiKhoan: user.MaTaiKhoan, Email: user.Email, VaiTro: user.VaiTro }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
     const { MatKhau: _, ...userData } = user.toJSON();
-    res.json({ token, user: userData });
+    res.status(200).json({success: true, token, user: userData });
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ message: err.message });
