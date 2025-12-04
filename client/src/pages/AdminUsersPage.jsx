@@ -48,7 +48,7 @@ function AdminUsersPage() {
           <table>
             <thead>
               <tr>
-                <th>Mã TK</th>
+                <th>Mã tài khoản</th>
                 <th>Tên tài khoản</th>
                 <th>Email</th>
                 <th>Vai trò</th>
@@ -59,7 +59,7 @@ function AdminUsersPage() {
             <tbody>
               {users.length > 0 ? users.map(u => (
                 <tr key={u.MaTaiKhoan}>
-                  <td><strong>#{u.MaTaiKhoan}</strong></td>
+                  <td><strong>{u.MaTaiKhoan}</strong></td>
                   <td style={{ fontWeight: '600' }}>{u.TenTaiKhoan}</td>
                   <td>{u.Email}</td>
                   <td>

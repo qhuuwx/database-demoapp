@@ -1,10 +1,10 @@
 import React from 'react';
 
-const SanPhamTable = ({ list = [], onEdit, onDelete, sortField, sortOrder, onSort, isNhanVien }) => {
+const SanPhamTable = ({ list = [], sortField, sortOrder, onSort }) => {
   const safeList = Array.isArray(list) ? list : [];
 
   const SortableHeader = ({ field, children }) => (
-    <th 
+    <th
       onClick={() => onSort(field)}
       style={{ cursor: 'pointer', userSelect: 'none' }}
     >
@@ -26,6 +26,7 @@ const SanPhamTable = ({ list = [], onEdit, onDelete, sortField, sortOrder, onSor
             <SortableHeader field="SoLuongTonKho">Tồn kho</SortableHeader>
             <SortableHeader field="DiemDanhGiaTB">Đánh giá</SortableHeader>
             <SortableHeader field="MoTa">Mô tả</SortableHeader>
+            <SortableHeader field="TenNhaCungCap">Nhà cung cấp</SortableHeader>
           </tr>
         </thead>
         <tbody>
@@ -41,11 +42,12 @@ const SanPhamTable = ({ list = [], onEdit, onDelete, sortField, sortOrder, onSor
               <td style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {item.MoTa}
               </td>
+              <td style={{ textAlign: 'center' }}>{item.TenNhaCungCap || 'N/A'}</td>
             </tr>
           )) : (
             <tr>
-              <td colSpan="6" style={{ textAlign: 'center', padding: '40px', color: '#6c757d' }}>
-                Chưa có sản phẩm nào
+              <td colSpan="7" style={{ textAlign: 'center', padding: '40px', color: '#6c757d' }}>
+                Không có sản phẩm nào
               </td>
             </tr>
           )}

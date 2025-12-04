@@ -6,20 +6,21 @@ import SanPhamTable from '../components/SanPhamTable';
 import SanPhamForm from '../components/SanPhamForm';
 
 function SanPhamPage() {
+  const getNameNCC = (ID) => {
+    const ncc = nhaCungCapList.find(ncc => ncc.ID === ID);
+    return ncc ? ncc.Ten : '';
+  };
   const { user, token } = useContext(AuthContext);
   const [sanPhamList, setSanPhamList] = useState([]);
   const [nhaCungCapList, setNhaCungCapList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [editingItem, setEditingItem] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [sortField, setSortField] = useState('MaSanPham');
   const [sortOrder, setSortOrder] = useState('asc');
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(1000000);
   const [minRating, setMinRating] = useState('');
-
-  const isNhanVien = user?.VaiTro === 'NhanVien';
 
   useEffect(() => {
     fetchData();
@@ -30,7 +31,12 @@ function SanPhamPage() {
     try {
       const data = await sanPhamService.getAll(token);
       setSanPhamList(data);
-      setFilteredList(data);
+      // Map TenNhaCungCap khi fetch lần đầu
+      const mapped = data.map(item => ({
+        ...item,
+        TenNhaCungCap: item.TenNhaCungCap || getNameNCC(item.IDNhacungcap)
+      }));
+      setFilteredList(mapped);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
@@ -47,16 +53,16 @@ function SanPhamPage() {
 
   const handleSearchSanPham = async () => {
     try {
+      let results = [];
       if (searchKeyword.trim() === '' && minPrice === '' && maxPrice === '' && minRating === '') {
-        setFilteredList(sanPhamList);
+        results = sanPhamList;
       } else {
-        let results = [];
         if (searchKeyword.trim() !== '') {
           results = await sanPhamService.searchSanPhamTheoNCC(searchKeyword, token);
         } else {
           results = sanPhamList;
         }
-        const filteredResults = results.filter(item => {
+        results = results.filter(item => {
           const priceValid =
             (minPrice === '' || item.Gia >= parseFloat(minPrice)) &&
             (maxPrice === '' || item.Gia <= parseFloat(maxPrice));
@@ -64,8 +70,13 @@ function SanPhamPage() {
             minRating === '' || item.DiemDanhGiaTB >= parseInt(minRating);
           return priceValid && ratingValid;
         });
-        setFilteredList(filteredResults);
       }
+      // Map thêm TenNhaCungCap cho từng sản phẩm
+      const mapped = results.map(item => ({
+        ...item,
+        TenNhaCungCap: item.TenNhaCungCap || getNameNCC(item.IDNhacungcap)
+      }));
+      setFilteredList(mapped);
     } catch (error) {
       console.error('Error searching products:', error);
       alert('Lỗi khi tìm kiếm sản phẩm');
@@ -77,10 +88,16 @@ function SanPhamPage() {
     setMinPrice(0);
     setMaxPrice(1000000);
     setMinRating('');
-    setFilteredList(sanPhamList);
+    // Map lại TenNhaCungCap khi reset
+    const mapped = sanPhamList.map(item => ({
+      ...item,
+      TenNhaCungCap: item.TenNhaCungCap || getNameNCC(item.IDNhacungcap)
+    }));
+    setFilteredList(mapped);
   };
 
   const handleSort = (field) => {
+    console.log("Sorting by field:", field);
     const newOrder = sortField === field && sortOrder === 'asc' ? 'desc' : 'asc';
     setSortField(field);
     setSortOrder(newOrder);
@@ -88,64 +105,21 @@ function SanPhamPage() {
     const sorted = [...filteredList].sort((a, b) => {
       let aVal = a[field];
       let bVal = b[field];
-
-      if (typeof aVal === 'string') {
-        aVal = aVal.toLowerCase();
-        bVal = bVal.toLowerCase();
+      if (typeof aVal === 'string' && typeof bVal === 'string') {
+        return newOrder === 'asc'
+          ? aVal.localeCompare(bVal, 'vi', { sensitivity: 'base' })
+          : bVal.localeCompare(aVal, 'vi', { sensitivity: 'base' });
       }
-
       if (aVal < bVal) return newOrder === 'asc' ? -1 : 1;
       if (aVal > bVal) return newOrder === 'asc' ? 1 : -1;
       return 0;
     });
-
     setFilteredList(sorted);
-  };
-
-  const handleAdd = () => {
-    setEditingItem(null);
-    setShowForm(true);
-  };
-
-  const handleEdit = (item) => {
-    setEditingItem(item);
-    setShowForm(true);
-  };
-
-  const handleSubmit = async (formData) => {
-    try {
-      if (editingItem) {
-        await sanPhamService.update({ ...formData, MaSanPham: editingItem.MaSanPham }, token);
-        alert('Cập nhật sản phẩm thành công');
-      } else {
-        await sanPhamService.create(formData, token);
-        alert('Thêm sản phẩm thành công');
-      }
-      setShowForm(false);
-      setEditingItem(null);
-      fetchData();
-    } catch (error) {
-      console.error('Error saving product:', error);
-      alert('Lỗi khi lưu sản phẩm: ' + (error.response?.data?.message || error.message));
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (!window.confirm('Bạn có chắc muốn xóa sản phẩm này?')) return;
-
-    try {
-      await sanPhamService.remove(id, token);
-      alert('Xóa sản phẩm thành công');
-      fetchData();
-    } catch (error) {
-      console.error('Error deleting product:', error);
-      alert('Lỗi khi xóa sản phẩm: ' + (error.response?.data?.message || error.message));
-    }
   };
 
   return (
     <div className="page-container">
-      <h2 style={{ marginBottom: 24, fontSize: '28px', fontWeight: '700', width:'80vw' }}>
+      <h2 style={{ marginBottom: 24, fontSize: '28px', fontWeight: '700', width: '80vw' }}>
         Quản lý Sản phẩm
       </h2>
 
@@ -170,16 +144,6 @@ function SanPhamPage() {
             onKeyPress={(e) => e.key === 'Enter' && handleSearchSanPham()}
             style={{ flex: 1 }}
           />
-
-          {isNhanVien && (
-            <button
-              onClick={handleAdd}
-              className="btn btn-success"
-              style={{ padding: '11px 24px', whiteSpace: 'nowrap' }}
-            >
-              Thêm mới
-            </button>
-          )}
         </div>
 
         {/* Filter Section */}
@@ -365,12 +329,10 @@ function SanPhamPage() {
       {/* Table Section */}
       <SanPhamTable
         list={filteredList}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
+        ListNCC={nhaCungCapList}
         sortField={sortField}
         sortOrder={sortOrder}
         onSort={handleSort}
-        isNhanVien={isNhanVien}
       />
 
       {/* Form Modal */}
@@ -379,7 +341,6 @@ function SanPhamPage() {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <SanPhamForm
               initial={editingItem}
-              onSubmit={handleSubmit}
               onClose={() => setShowForm(false)}
               nhaCungCapList={nhaCungCapList}
             />
