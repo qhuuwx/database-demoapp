@@ -6,10 +6,6 @@ import SanPhamTable from '../components/SanPhamTable';
 import SanPhamForm from '../components/SanPhamForm';
 
 function SanPhamPage() {
-  const getNameNCC = (ID) => {
-    const ncc = nhaCungCapList.find(ncc => ncc.ID === ID);
-    return ncc ? ncc.Ten : '';
-  };
   const { user, token } = useContext(AuthContext);
   const [sanPhamList, setSanPhamList] = useState([]);
   const [nhaCungCapList, setNhaCungCapList] = useState([]);
@@ -21,36 +17,30 @@ function SanPhamPage() {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(1000000);
   const [minRating, setMinRating] = useState('');
-
+  const getNameNCC = (ID,list) => {
+    const ncc = list.find(ncc => ncc.ID === ID);
+    console.log('Getting name for NCC ID:', ID, 'Found:', ncc);
+    return ncc ? ncc.Ten : 'Lỗi lấy tên NCC';
+  };
   useEffect(() => {
     fetchData();
-    fetchNhaCungCap();
   }, [token]);
-
   const fetchData = async () => {
     try {
       const data = await sanPhamService.getAll(token);
+      const NCC = await nhaCungCapService.getAll();
+      setNhaCungCapList(NCC);
       setSanPhamList(data);
-      // Map TenNhaCungCap khi fetch lần đầu
       const mapped = data.map(item => ({
         ...item,
-        TenNhaCungCap: item.TenNhaCungCap || getNameNCC(item.IDNhacungcap)
+        TenNhaCungCap: item.TenNhaCungCap || getNameNCC(item.IDNhacungcap, NCC)
       }));
       setFilteredList(mapped);
+      console.log('Fetched SanPham:', mapped);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
   };
-
-  const fetchNhaCungCap = async () => {
-    try {
-      const data = await nhaCungCapService.getAll();
-      setNhaCungCapList(data);
-    } catch (error) {
-      console.error('Error fetching suppliers:', error);
-    }
-  };
-
   const handleSearchSanPham = async () => {
     try {
       let results = [];
@@ -71,10 +61,9 @@ function SanPhamPage() {
           return priceValid && ratingValid;
         });
       }
-      // Map thêm TenNhaCungCap cho từng sản phẩm
       const mapped = results.map(item => ({
         ...item,
-        TenNhaCungCap: item.TenNhaCungCap || getNameNCC(item.IDNhacungcap)
+        TenNhaCungCap: item.TenNhaCungCap || getNameNCC(item.IDNhacungcap,nhaCungCapList)
       }));
       setFilteredList(mapped);
     } catch (error) {
@@ -91,7 +80,7 @@ function SanPhamPage() {
     // Map lại TenNhaCungCap khi reset
     const mapped = sanPhamList.map(item => ({
       ...item,
-      TenNhaCungCap: item.TenNhaCungCap || getNameNCC(item.IDNhacungcap)
+      TenNhaCungCap: item.TenNhaCungCap || getNameNCC(item.IDNhacungcap,nhaCungCapList)
     }));
     setFilteredList(mapped);
   };
@@ -162,10 +151,10 @@ function SanPhamPage() {
                 Khoảng giá: {minPrice.toLocaleString('vi-VN')}đ - {maxPrice.toLocaleString('vi-VN')}đ
               </label>
               <div style={{ position: 'relative', padding: '0 8px' }}>
-                <div style={{ 
-                  position: 'relative', 
-                  height: '6px', 
-                  background: '#ddd', 
+                <div style={{
+                  position: 'relative',
+                  height: '6px',
+                  background: '#ddd',
                   borderRadius: '3px',
                   marginTop: '8px'
                 }}>
@@ -174,8 +163,8 @@ function SanPhamPage() {
                     height: '6px',
                     background: 'linear-gradient(to right, #3498db, #3498db)',
                     borderRadius: '3px',
-                    left: `${(minPrice/1000000)*100}%`,
-                    right: `${100-(maxPrice/1000000)*100}%`
+                    left: `${(minPrice / 1000000) * 100}%`,
+                    right: `${100 - (maxPrice / 1000000) * 100}%`
                   }} />
                 </div>
                 <input
@@ -230,7 +219,7 @@ function SanPhamPage() {
                 />
               </div>
             </div>
-            
+
             {/* Rating Filter */}
             <div>
               <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500', color: '#495057' }}>
@@ -251,7 +240,7 @@ function SanPhamPage() {
               </select>
             </div>
           </div>
-          
+
           {/* Add CSS for range slider thumb */}
           <style>{`
             input[type="range"]::-webkit-slider-runnable-track {
@@ -326,10 +315,9 @@ function SanPhamPage() {
         </div>
       </div>
 
-      {/* Table Section */}
+      { }
       <SanPhamTable
         list={filteredList}
-        ListNCC={nhaCungCapList}
         sortField={sortField}
         sortOrder={sortOrder}
         onSort={handleSort}

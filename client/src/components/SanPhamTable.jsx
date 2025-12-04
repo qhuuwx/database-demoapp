@@ -2,7 +2,6 @@ import React from 'react';
 
 const SanPhamTable = ({ list = [], sortField, sortOrder, onSort }) => {
   const safeList = Array.isArray(list) ? list : [];
-
   const SortableHeader = ({ field, children }) => (
     <th
       onClick={() => onSort(field)}
