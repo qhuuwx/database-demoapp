@@ -1,0 +1,22 @@
+List account
+# admin_manager: A6U5AxGOyAhgvOWM
+# staff_sales1: FLZnuc1DBXzx7No2
+# doctor_tam: ES54LRfgCEu6HIfW
+# doctor_thao: vJZAaxwK1gKn15i1
+# staff_kho: JQdPJvbWdYkqcKpj
+# customer_an: lC6A1m3EAbBPlOzU
+# customer_binh: q8UM3-vQviH9eyOg
+# customer_cuong: yNTOxzFePGgFFH3m
+# customer_dung: 9biWoGMUapLMtF67
+# customer_em: tzp1vRXKHqhdE9ZZ
+
+run backend (port: 5000):
+1. cd .\server\
+2. npm install
+3. npm start
+
+run frontend(port: 3000):
+
+1. cd .\client\
+2. npm install
+3. npm start
