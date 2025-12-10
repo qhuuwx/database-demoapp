@@ -54,7 +54,7 @@ function RegisterPage() {
       fontSize: '32px',
       fontWeight: '700',
       color: '#2c3e50',
-      marginBottom: '8px'
+      marginBottom: '8px',
     },
     subtitle: {
       color: '#6c757d',
@@ -131,7 +131,7 @@ function RegisterPage() {
 
           <button
             type="submit"
-            className="btn btn-primary"
+            className="btn-login"
             style={{ width: '100%', padding: '14px', fontSize: '16px', fontWeight: '600' }}
             disabled={loading}
           >

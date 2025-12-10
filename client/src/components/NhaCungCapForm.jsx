@@ -42,7 +42,7 @@ const TINH_THANH_PHO = [
   'TP Đà Nẵng',
   'TP Hà Nội',
   'TP Hải Phòng',
-  'TP.HCM',
+  'TP Hồ Chí Minh',
   'TP Huế'
 ];
 
